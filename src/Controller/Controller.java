@@ -4,6 +4,7 @@ import Model.LoanItemManager;
 import Model.LoanSystem;
 import Model.MemberManager;
 import Model.ProductManager;
+import Model.tasks.UpdateGUI;
 import View.*;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class Controller {
    private ProductManager productManager;
    //private LoanSystem loanSystem;  //model
    private LoanItemManager loanItemManager;
+   private UpdateGUI updateGUI;
 
     //constructor, create view and model
     public Controller() {
@@ -24,6 +26,7 @@ public class Controller {
         memberManager = new MemberManager();
         productManager = new ProductManager();
         loanItemManager = new LoanItemManager();
+        updateGUI = new UpdateGUI(this);
 
     }
 
@@ -50,7 +53,8 @@ public class Controller {
                     System.out.println(memberManager.addNewTestMember());
                     System.out.println(memberManager.size());
                     System.out.println(Arrays.toString(memberManager.getMemberInfoStrings()));
-                    
+
+                    updateGUI.start();
 
 
                 } catch (Exception e) {
@@ -75,8 +79,6 @@ public class Controller {
     public void updateAllItems() throws IOException {
         //String[] infoStrings1 = list of products on loan  (LoanItemManager)
         String[] infoStrings2 = productManager.getProductInfoStrings();
-        //String[] memberInfoStrings = memberManager.readMember();
-        //String[] productInfoStrings = productManager.readProduct();
 
         // String[] infoStrings = combine the above
 
@@ -91,12 +93,12 @@ public class Controller {
 
         //only for testing, delete the code when
         // have tested the UI
-        boolean stop = false;
-        String [] test = new String[10];
-        for (int i=0; i < 10; i++)
-            test[i] = "Item" + i;
+//        boolean stop = false;
+//        String [] test = new String[10];
+//        for (int i=0; i < 10; i++)
+//            test[i] = "Item" + i;
 
-        view.updateItemsList(test, true);
+        view.updateItemsList(infoStrings2, true);
 
     }
 
