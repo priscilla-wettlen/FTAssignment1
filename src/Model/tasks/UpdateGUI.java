@@ -3,6 +3,7 @@ package Model.tasks;
 import Controller.Controller;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.Random;
 
 /*
@@ -35,7 +36,11 @@ public class UpdateGUI extends Thread {
                 // Update any UI  - Ensures updates are performed on the Event Dispatch Thread
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        controller.updateAllItems();
+                        try {
+                            controller.updateAllItems();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
                 Thread.sleep(2000); // Simulate some operation

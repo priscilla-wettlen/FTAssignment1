@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 // This class is a JPanel subclass, placed at the bottom of the
 // MainPanel.  It hosts two buttons, Start and Stop.
@@ -63,11 +64,20 @@ public class SouthPanel extends JPanel
     {
         public void actionPerformed(ActionEvent e)
         {
-            if (e.getSource() == btnOK)
-                controller.buttonPressed(ButtonType.Start);
+            if (e.getSource() == btnOK) {
+                try {
+                    controller.buttonPressed(ButtonType.Start);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
             else if (e.getSource()== btnStop)
             {
-                 controller.buttonPressed(ButtonType.Stop);
+                try {
+                    controller.buttonPressed(ButtonType.Stop);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }

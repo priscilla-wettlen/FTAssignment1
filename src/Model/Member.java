@@ -12,9 +12,22 @@ public class Member {
         this.name = name;
     }
 
+
     //Getter method connected to the name field
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     //The toString method retuning a textual representation of the

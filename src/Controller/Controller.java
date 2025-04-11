@@ -1,17 +1,29 @@
 package Controller;
 
+import Model.LoanItemManager;
+import Model.LoanSystem;
+import Model.MemberManager;
+import Model.ProductManager;
 import View.*;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class Controller {
    private MainFrame view;
-    //LoanSysManager loanSystem;  //model
+   private MemberManager memberManager;
+   private ProductManager productManager;
+   //private LoanSystem loanSystem;  //model
+   private LoanItemManager loanItemManager;
 
     //constructor, create view and model
     public Controller() {
-        //loanSystem = new LoanSysManager(this);  //model
+        //loanSystem = new LoanSystem();  //model
         view = new MainFrame(this);  //view
+        memberManager = new MemberManager();
+        productManager = new ProductManager();
+        loanItemManager = new LoanItemManager();
 
     }
 
@@ -21,14 +33,24 @@ public class Controller {
     //are created and started to perform their Model.managers.tasks.
     //TO DO: Write code for the  case Start to start the loan system simulation
     //       Write code for the case stop to stop the threads
-    public void buttonPressed(ButtonType button) {
+    public void buttonPressed(ButtonType button) throws IOException {
 
         switch (button) {
             case Start:
                 try {
-                    view.updateEventLog(""); //clear list
-                    view.updateEventLog("Test event!");
-                    //loanSystem.start();  //start the simulation
+                    /*
+                    * It's adding products starting with id 115 and then
+                    * printing the size of the array list, which
+                    * reflects the number of added products
+                    * */
+                    System.out.println(productManager.addNewTestProduct());
+                    System.out.println(productManager.size());
+                    System.out.println(Arrays.toString(productManager.getProductInfoStrings()));
+
+                    System.out.println(memberManager.addNewTestMember());
+                    System.out.println(memberManager.size());
+                    System.out.println(Arrays.toString(memberManager.getMemberInfoStrings()));
+                    
 
 
                 } catch (Exception e) {
@@ -50,19 +72,21 @@ public class Controller {
     //LoanItemManager and ProductManager.  The lists are merged together and
     //the resulting string array is sent to EastPanel via a call to the view, for displaying.
 
-    public void updateAllItems() {
+    public void updateAllItems() throws IOException {
         //String[] infoStrings1 = list of products on loan  (LoanItemManager)
-        //String[] infoStrings2 = list of procucts availale  (ProductManager)
+        String[] infoStrings2 = productManager.getProductInfoStrings();
+        //String[] memberInfoStrings = memberManager.readMember();
+        //String[] productInfoStrings = productManager.readProduct();
 
         // String[] infoStrings = combine the above
 
-        String dateTime = getCurrentDateTime();
+        //String dateTime = getCurrentDateTime();
 
         //infoStrings[0] = dateTime;
 
 
-        //if (infoStrings != null)
-        //   view.updateItemsList(infoStrings, true);
+//        if (productInfoStrings != null)
+//           view.updateItemsList(productInfoStrings, true);
 
 
         //only for testing, delete the code when

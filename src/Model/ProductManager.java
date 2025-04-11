@@ -1,7 +1,8 @@
-package Model.managers;
+package Model;
 
-import Model.Product;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +11,13 @@ import java.util.List;
 //available for loan.  When a product is loaned by a member the
 //product is removed from this list and placed in the LoanItenmList,
 //and when returned, the object is added to the list again.
-public class ProductManager {
+public class ProductManager{
     private List<Product> products = new ArrayList<>();  //you may use other types of collections
 
-    //Products receive an Id sarting from 100 and then
-    //everyting a new product is created, the id is
+    //Products receive an Id starting from 100 and then
+    //every time a new product is created, the id is
     //incremented.
-    private int lastProductID = 100; //Optional start id
+    private int productID = 100;//Optional start id
 
     //returns a product at a position = index in the list
     public Product get(int index)
@@ -26,6 +27,8 @@ public class ProductManager {
         else
             return null;
     }
+
+
     //Adds a given product at the end of the list
     public void add(Product product)
     {
@@ -50,6 +53,8 @@ public class ProductManager {
     private boolean checkIndex(int index) {
         return (index >= 0) && (index < products.size());
     }
+
+
     //Preapare and rturn a string array where each element contains
     //information about the loanObject, calling the object's
     //toString metod.  The return array can then be used to update
@@ -93,9 +98,11 @@ public class ProductManager {
     public Product addNewTestProduct()
     {
         Product product = new Product(); // Assume Product constructor and methods are defined elsewhere
-        product.setId(Integer.toString( lastProductID));
-        product.setName("Product" + (lastProductID++));
+        product.setId(Integer.toString( productID));
+        product.setName("Product" + (productID++));
         products.add(product);
         return product;
     }
+
 }
+
