@@ -30,7 +30,7 @@ public class UpdateGUI extends Thread {
 
     //This method is run by the thread assigned to perform the task. It requests
     //updating the list of products and the list of items on loan by the controller.
-    public void run() {
+    public synchronized void run() {
         try {
             while (isRunning) {
                 // Update any UI  - Ensures updates are performed on the Event Dispatch Thread

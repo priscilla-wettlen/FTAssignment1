@@ -4,9 +4,11 @@ import Model.LoanItemManager;
 import Model.LoanSystem;
 import Model.MemberManager;
 import Model.ProductManager;
+import Model.tasks.AdminTask;
 import Model.tasks.UpdateGUI;
 import View.*;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -18,13 +20,16 @@ public class Controller {
    //private LoanSystem loanSystem;  //model
    private LoanItemManager loanItemManager;
    private UpdateGUI updateGUI;
+   private AdminTask adminTask;
 
     //constructor, create view and model
     public Controller() {
         //loanSystem = new LoanSystem();  //model
+
         view = new MainFrame(this);  //view
         memberManager = new MemberManager();
         productManager = new ProductManager();
+        adminTask = new AdminTask(productManager);
         loanItemManager = new LoanItemManager();
         updateGUI = new UpdateGUI(this);
 
@@ -40,28 +45,19 @@ public class Controller {
 
         switch (button) {
             case Start:
-                try {
-                    /*
-                    * It's adding products starting with id 115 and then
-                    * printing the size of the array list, which
-                    * reflects the number of added products
-                    * */
-                    System.out.println(productManager.addNewTestProduct());
-                    System.out.println(productManager.size());
-                    System.out.println(Arrays.toString(productManager.getProductInfoStrings()));
-
-                    System.out.println(memberManager.addNewTestMember());
-                    System.out.println(memberManager.size());
-                    System.out.println(Arrays.toString(memberManager.getMemberInfoStrings()));
-
-                    updateGUI.start();
+                new Thread(() -> {
+                    try {
+                        Thread adminThread = new Thread(new AdminTask(productManager));
+                        adminThread.start();
+                        adminThread.join(); // Wait for AdminTask to finish
 
 
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                        //SwingUtilities.invokeLater(() -> updateGUI.start());
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).start(); // wrap the whole thing in a new background thread
                 break;
-
             case Stop:
                 //loanSystem.stop();
 
@@ -78,7 +74,8 @@ public class Controller {
 
     public void updateAllItems() throws IOException {
         //String[] infoStrings1 = list of products on loan  (LoanItemManager)
-        String[] infoStrings2 = productManager.getProductInfoStrings();
+        String[] infoStrings2 = this.productManager.getProductInfoStrings();
+        System.out.println(infoStrings2.length);
 
         // String[] infoStrings = combine the above
 
@@ -87,8 +84,8 @@ public class Controller {
         //infoStrings[0] = dateTime;
 
 
-//        if (productInfoStrings != null)
-//           view.updateItemsList(productInfoStrings, true);
+//        if (infoStrings2 != null)
+//           view.updateItemsList(infoStrings2, true);
 
 
         //only for testing, delete the code when
@@ -99,6 +96,8 @@ public class Controller {
 //            test[i] = "Item" + i;
 
         view.updateItemsList(infoStrings2, true);
+
+
 
     }
 

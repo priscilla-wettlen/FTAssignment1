@@ -69,7 +69,7 @@ public class ProductManager{
         String [] infoStrings = new String[products.size()+3]; //See (x)
 
         infoStrings[0] =   String.format("Number of products availabale: %s", products.size()); //(1)
-        infoStrings[1] = "";  //(2)
+        //infoStrings[1] = "";  //(2)
         int j= 2;
 
         //Fill the list with info on each element, using the object's toString
@@ -98,7 +98,7 @@ public class ProductManager{
     public Product addNewTestProduct()
     {
         Product product = new Product(); // Assume Product constructor and methods are defined elsewhere
-        product.setId(Integer.toString( productID));
+        product.setId(Integer.toString(productID));
         product.setName("Product" + (productID++));
         products.add(product);
         return product;
