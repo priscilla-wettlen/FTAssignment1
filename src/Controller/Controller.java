@@ -1,36 +1,39 @@
 package Controller;
 
-import Model.LoanItemManager;
-import Model.LoanSystem;
-import Model.MemberManager;
-import Model.ProductManager;
+import Model.*;
 import Model.tasks.AdminTask;
+import Model.tasks.LoanTask;
+import Model.tasks.ReturnTask;
 import Model.tasks.UpdateGUI;
 import View.*;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.List;
 
 public class Controller {
    private MainFrame view;
    private MemberManager memberManager;
    private ProductManager productManager;
-   //private LoanSystem loanSystem;  //model
    private LoanItemManager loanItemManager;
    private UpdateGUI updateGUI;
    private AdminTask adminTask;
+   private LoanTask loanTask;
+   private ReturnTask returnTask;
+   private Thread adminThread;
+   private Thread loanThread;
+   private Thread returnThread;
 
     //constructor, create view and model
     public Controller() {
         //loanSystem = new LoanSystem();  //model
-
         view = new MainFrame(this);  //view
         memberManager = new MemberManager();
         productManager = new ProductManager();
-        adminTask = new AdminTask(productManager);
         loanItemManager = new LoanItemManager();
+        adminTask = new AdminTask(productManager, memberManager, this);
+        loanTask = new LoanTask(productManager, memberManager, loanItemManager, this);
+        returnTask = new ReturnTask(loanItemManager, productManager, this);
         updateGUI = new UpdateGUI(this);
 
     }
@@ -45,23 +48,24 @@ public class Controller {
 
         switch (button) {
             case Start:
-                new Thread(() -> {
-                    try {
-                        Thread adminThread = new Thread(new AdminTask(productManager));
-                        adminThread.start();
-                        adminThread.join(); // Wait for AdminTask to finish
+                adminThread = new Thread(adminTask);
+                adminThread.start();
 
+                loanThread = new Thread(loanTask);
+                loanThread.start();
 
-                        //SwingUtilities.invokeLater(() -> updateGUI.start());
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }).start(); // wrap the whole thing in a new background thread
-                break;
-            case Stop:
-                //loanSystem.stop();
+                returnThread = new Thread(returnTask);
+                returnThread.start();
 
                 updateAllItems();
+                break;
+            case Stop:
+
+                adminThread.interrupt();
+                loanThread.interrupt();
+                returnThread.interrupt();
+
+                //updateAllItems();
                 break;
         }
     }
@@ -73,33 +77,35 @@ public class Controller {
     //the resulting string array is sent to EastPanel via a call to the view, for displaying.
 
     public void updateAllItems() throws IOException {
-        //String[] infoStrings1 = list of products on loan  (LoanItemManager)
-        String[] infoStrings2 = this.productManager.getProductInfoStrings();
-        System.out.println(infoStrings2.length);
-
-        // String[] infoStrings = combine the above
-
-        //String dateTime = getCurrentDateTime();
-
-        //infoStrings[0] = dateTime;
+        String[] infoStrings1 = loanItemManager.getLoanInfoStrings();
+        String[] infoStrings2 = productManager.getProductInfoStrings();
 
 
-//        if (infoStrings2 != null)
-//           view.updateItemsList(infoStrings2, true);
+
+         String[] infoStrings = new String[infoStrings1.length + infoStrings2.length];
+         System.arraycopy(infoStrings1, 0, infoStrings, 0, infoStrings1.length);
+         System.arraycopy(infoStrings2, 0, infoStrings, infoStrings1.length, infoStrings2.length);
+
+        String dateTime = getCurrentDateTime();
+
+        infoStrings[0] = dateTime;
 
 
-        //only for testing, delete the code when
-        // have tested the UI
-//        boolean stop = false;
-//        String [] test = new String[10];
-//        for (int i=0; i < 10; i++)
-//            test[i] = "Item" + i;
-
-        view.updateItemsList(infoStrings2, true);
-
-
+        view.updateItemsList(infoStrings, true);
 
     }
+
+//    public void updateAllItems() throws IOException {
+//        String[] infoStrings2 = productManager.getProductInfoStrings();
+//        String[] infoStrings = new String[infoStrings2.length + 1];
+//
+//        String dateTime = getCurrentDateTime();
+//        infoStrings[0] = dateTime;
+//
+//        System.arraycopy(infoStrings2, 0, infoStrings, 1, infoStrings2.length);
+//
+//        view.updateItemsList(infoStrings, true);
+//    }
 
 
 

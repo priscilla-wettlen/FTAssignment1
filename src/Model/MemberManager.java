@@ -81,4 +81,8 @@ public class MemberManager {
         return member;
     }
 
+    public List<Member> getMembers(){
+        return members;
+    }
+
 }
