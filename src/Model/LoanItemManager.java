@@ -38,7 +38,7 @@ public class LoanItemManager {
         }
 
         String[] infoStrings = new String[loanItems.size() + 3];
-        infoStrings[0] = String.format("Number of products on loan: %s", loanItems.size());
+        infoStrings[1] = String.format("Number of products on loan: %s", loanItems.size());
 
         int j = 2;
         for (LoanItem loanItem : loanItems) {

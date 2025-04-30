@@ -47,7 +47,7 @@ public class LoanTask implements Runnable {
                         }
                     }
 
-                    int sleepTime = 2000 + random.nextInt(4001); // 2000 to 6000 ms
+                    int sleepTime = 200 + random.nextInt(4003); // 2000 to 6000 ms
                     Thread.sleep(sleepTime);
                     controller.updateView(statusMessage);
 

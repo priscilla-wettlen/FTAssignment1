@@ -60,12 +60,10 @@ public class Controller {
                 updateAllItems();
                 break;
             case Stop:
-
+                updateAllItems();
                 adminThread.interrupt();
                 loanThread.interrupt();
                 returnThread.interrupt();
-
-                //updateAllItems();
                 break;
         }
     }
@@ -83,7 +81,7 @@ public class Controller {
 
 
          String[] infoStrings = new String[infoStrings1.length + infoStrings2.length];
-         System.arraycopy(infoStrings1, 0, infoStrings, 0, infoStrings1.length);
+         System.arraycopy(infoStrings1, 0, infoStrings, 0, 2);
          System.arraycopy(infoStrings2, 0, infoStrings, infoStrings1.length, infoStrings2.length);
 
         String dateTime = getCurrentDateTime();
@@ -94,19 +92,6 @@ public class Controller {
         view.updateItemsList(infoStrings, true);
 
     }
-
-//    public void updateAllItems() throws IOException {
-//        String[] infoStrings2 = productManager.getProductInfoStrings();
-//        String[] infoStrings = new String[infoStrings2.length + 1];
-//
-//        String dateTime = getCurrentDateTime();
-//        infoStrings[0] = dateTime;
-//
-//        System.arraycopy(infoStrings2, 0, infoStrings, 1, infoStrings2.length);
-//
-//        view.updateItemsList(infoStrings, true);
-//    }
-
 
 
     //Returns the current date and time to be displayed with updating

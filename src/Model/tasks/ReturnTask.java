@@ -46,7 +46,7 @@ public class ReturnTask implements Runnable {
                         System.out.println(statusMessage);
                     }
 
-                    int sleepTime = 3000 + random.nextInt(10001); // 5000 to 20000 ms
+                    int sleepTime = 500 + random.nextInt(5001); // 5000 to 20000 ms
                     Thread.sleep(sleepTime);
                     controller.updateView(statusMessage);
 
