@@ -3,6 +3,7 @@ package Model.tasks;
 import Model.*;
 import Controller.Controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +28,7 @@ public class ReturnTask implements Runnable {
 
 
     @Override
-    public void run() {
+    public synchronized void run() {
         while (true) {
             long startTime = System.currentTimeMillis();
             long duration = 5000; // Run for 5 seconds
@@ -46,19 +47,21 @@ public class ReturnTask implements Runnable {
                         System.out.println(statusMessage);
                     }
 
-                    int sleepTime = 500 + random.nextInt(5001); // 5000 to 20000 ms
-                    Thread.sleep(sleepTime);
+                    Thread.sleep(8000); // Delay BEFORE updating view, so view and message sync
+                    controller.updateAllItems();
                     controller.updateView(statusMessage);
 
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    System.out.println("ReturnTask was interrupted.");
+                    //System.out.println("ReturnTask was interrupted.");
                     return;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
             try {
-                System.out.println("ReturnTask sleeping for 5 seconds...");
+                //System.out.println("ReturnTask sleeping for 5 seconds...");
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

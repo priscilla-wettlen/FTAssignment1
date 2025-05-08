@@ -39,7 +39,6 @@ public class Controller {
     }
 
 
-
     //This method starts LoanSystem manager where the threads
     //are created and started to perform their Model.managers.tasks.
     //TO DO: Write code for the  case Start to start the loan system simulation
@@ -77,8 +76,6 @@ public class Controller {
     public void updateAllItems() throws IOException {
         String[] infoStrings1 = loanItemManager.getLoanInfoStrings();
         String[] infoStrings2 = productManager.getProductInfoStrings();
-
-
 
          String[] infoStrings = new String[infoStrings1.length + infoStrings2.length];
          System.arraycopy(infoStrings1, 0, infoStrings, 0, 2);

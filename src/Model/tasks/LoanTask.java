@@ -23,46 +23,45 @@ public class LoanTask implements Runnable {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         while (true) {
-            long startTime = System.currentTimeMillis();
-            long duration = 5000; // Run for 5 seconds
-
-            while (System.currentTimeMillis() - startTime < duration) {
-                try {
-                    Product product = getRandomProduct();
-                    Member member = getRandomMember();
-
-                    String statusMessage = "";
-
-                    if (product != null && member != null) {
-                        boolean success = loanItemManager.add(product, member);
-                        if (success) {
-                            statusMessage = "Product " + product.getName() + " loaned to member " + member.getName();
-                            int prodId = Integer.parseInt(product.getId());
-                            productManager.remove(prodId);
-                            controller.updateAllItems();
-                        } else {
-                            statusMessage = "Product " + product.getName() + " is already loaned.";
-                        }
-                    }
-
-                    int sleepTime = 200 + random.nextInt(4003); // 2000 to 6000 ms
-                    Thread.sleep(sleepTime);
-                    controller.updateView(statusMessage);
-
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    System.out.println("LoanTask was interrupted.");
-                    return;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            try {
+                List<Product> products = productManager.getProducts();
+                if (products.isEmpty()) {
+                    Thread.sleep(5000);
+                    continue;
                 }
+
+                int productIndex = random.nextInt(products.size());
+                Product product = productManager.get(productIndex);
+                Member member = getRandomMember();
+
+                String statusMessage = "";
+
+                if (product != null && member != null) {
+                    boolean success = loanItemManager.add(product, member);
+                    if (success) {
+                        statusMessage = "Product " + product.getName() + " loaned to member " + member.getName();
+                        productManager.remove(productIndex);
+                        System.out.println("Removed product at index: " + productIndex);
+                    } else {
+                        statusMessage = "Product " + product.getName() + " is already loaned.";
+                    }
+                }
+
+                Thread.sleep(7000);
+                controller.updateAllItems();
+                controller.updateView(statusMessage);
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
             try {
-                System.out.println("LoanTask sleeping for 5 seconds...");
-                Thread.sleep(5000);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
@@ -71,11 +70,17 @@ public class LoanTask implements Runnable {
     }
 
 
-    private Product getRandomProduct() {
-        List<Product> products = productManager.getProducts();
-        if (products.isEmpty()) return null;
-        return products.get(random.nextInt(products.size()));
-    }
+
+    //    private Product getRandomProduct() {
+//        List<Product> products = productManager.getProducts();
+//        if (products.isEmpty()) return null;
+//        return products.get(random.nextInt(products.size()));
+//    }
+private int getRandomProductIndex() {
+    List<Product> products = productManager.getProducts();
+    if (products.isEmpty()) return -1;
+    return random.nextInt(products.size());
+}
 
     private Member getRandomMember() {
         List<Member> members = memberManager.getMembers();

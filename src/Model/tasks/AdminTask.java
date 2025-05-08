@@ -5,7 +5,6 @@ import Model.ProductManager;
 import Controller.Controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 
 public class AdminTask implements Runnable {
@@ -23,26 +22,15 @@ public class AdminTask implements Runnable {
     }
 
     @Override
-    public void run() {
-        while (true) {
-            long startTime = System.currentTimeMillis();
-            long duration = 5000; // run for 5 seconds
+    public synchronized void run() {
+        productManager.addTestProducts();
 
-            productManager.addNewTestProduct();
+        while (true) {
+            System.out.println(productManager.size());
             memberManager.addTestMember();
 
-            System.out.println(memberManager.getMembers().toString());
-
-            // Inner loop runs for 5 seconds
-//            while (System.currentTimeMillis() - startTime < duration) {
-//                productManager.addTestProducts();
-//                memberManager.addTestMember();
-//
-//                System.out.println(memberManager.getMembers().toString());
-//
                 try {
-                    //int sleepTime = 200 + random.nextInt(4001); // simulate varied work time
-                    Thread.sleep(5000);
+                    Thread.sleep(400);
                     controller.updateAllItems();
                 } catch (InterruptedException | IOException e) {
                     Thread.currentThread().interrupt();
@@ -50,18 +38,7 @@ public class AdminTask implements Runnable {
                 }
             }
 
-            // Wait for 5 seconds before next 5-second task cycle
-//            try {
-//                //System.out.println("Pausing for 5 seconds...");
-//                Thread.sleep(500);
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//                return;
-//            }
-        }
     }
 
-//}
+}
 
-//TODO It creates one product every 5 seconds, loans it, updates the corresponding
-//TODO number on the corresponding list and when it returns it, adds it to productlIST AGAIN
